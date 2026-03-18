@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hem★Hem SaiGon — Official Merch Store</title>
+<meta name="description" content="Official merchandise store for Hem★Hem SaiGon, Vietnam's legendary ska orchestra. Pay with crypto or card.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav id="main-nav">
+  <a class="nav-logo" href="#/">
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="18" cy="18" r="17" stroke="#1a56db" stroke-width="2"/>
+      <text x="18" y="14" text-anchor="middle" fill="white" font-size="6" font-weight="700" font-family="Space Grotesk, sans-serif">Hem★Hem</text>
+      <text x="18" y="24" text-anchor="middle" fill="white" font-size="8" font-weight="700" font-family="Space Grotesk, sans-serif">SaiGon</text>
+    </svg>
+    <span class="nav-logo-text">Hem★Hem SaiGon</span>
+  </a>
+
+  <div class="nav-links" id="navLinks">
+    <a class="nav-link active" href="#/" data-page="home">Home</a>
+    <a class="nav-link" href="#/shop" data-page="shop">Shop</a>
+    <a class="nav-link" href="https://www.facebook.com/hemhemsaigon/" target="_blank" rel="noopener">Band</a>
+  </div>
+
+  <div class="nav-right">
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <button class="nav-cart" id="cartToggle" aria-label="Cart">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══ HOME PAGE ═══ -->
+<div class="page active" id="page-home">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge fade-in">
+      <span class="dot"></span>
+      Saigon Ska Since 2012
+    </div>
+    <h1 class="hero-title fade-in stagger-1">
+      NO RICE<br>NO LIFE
+      <span>Official Merch Store</span>
+    </h1>
+    <p class="hero-sub fade-in stagger-2">
+      Exclusive merchandise from Ho Chi Minh City's legendary ska orchestra.<br>
+      Pay with crypto or card.
+    </p>
+    <div class="hero-actions fade-in stagger-3">
+      <a class="btn btn-primary" href="#/shop">SHOP NOW →</a>
+      <a class="btn btn-outline" href="#/shop">VIEW ALL</a>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee">
+    <div class="marquee-inner">
+      <span class="marquee-item"><span class="dot">●</span> HAVE A RICE DAY</span>
+      <span class="marquee-item"><span class="dot">●</span> EVM MULTI-CHAIN</span>
+      <span class="marquee-item"><span class="dot">●</span> SOLANA</span>
+      <span class="marquee-item"><span class="dot">●</span> CRYPTO PAYMENTS</span>
+      <span class="marquee-item"><span class="dot">●</span> WORLDWIDE SHIPPING</span>
+      <span class="marquee-item"><span class="dot">●</span> HAVE A RICE DAY</span>
+      <span class="marquee-item"><span class="dot">●</span> EVM MULTI-CHAIN</span>
+      <span class="marquee-item"><span class="dot">●</span> SOLANA</span>
+      <span class="marquee-item"><span class="dot">●</span> CRYPTO PAYMENTS</span>
+      <span class="marquee-item"><span class="dot">●</span> WORLDWIDE SHIPPING</span>
+    </div>
+  </div>
+
+  <!-- Featured Products -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-title">
+        New Arrivals
+        <strong>Featured</strong>
+      </div>
+      <a class="section-link" href="#/shop">View All →</a>
+    </div>
+    <div class="product-grid" id="featured-grid"></div>
+  </section>
+
+  <!-- Brand Strip -->
+  <div class="brand-strip">
+    <h2>HAVE A<br><em>RICE</em> DAY</h2>
+    <p>Ska orchestra from Saigon's alleys to the world</p>
+  </div>
+
+  <!-- Best Sellers -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-title">
+        Essentials
+        <strong>Best Sellers</strong>
+      </div>
+      <a class="section-link" href="#/shop">View All →</a>
+    </div>
+    <div class="product-grid" id="bestseller-grid"></div>
+  </section>
+</div>
+
+<!-- ═══ SHOP PAGE ═══ -->
+<div class="page" id="page-shop">
+  <div class="shop-header">
+    <h1 class="shop-title">Shop</h1>
+    <p class="shop-count" id="shopCount"></p>
+    <div class="shop-filters" id="shopFilters"></div>
+  </div>
+  <div class="shop-grid">
+    <div class="product-grid" id="shop-product-grid"></div>
+  </div>
+</div>
+
+<!-- ═══ PRODUCT DETAIL PAGE ═══ -->
+<div class="page" id="page-detail">
+  <div class="detail-container" id="detail-container">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- ═══ CHECKOUT PAGE ═══ -->
+<div class="page" id="page-checkout">
+  <div class="checkout-container">
+    <h1 class="checkout-title">Checkout</h1>
+
+    <div class="checkout-section">
+      <div class="checkout-section-title">Select Payment Method</div>
+
+      <div class="payment-option selected" data-method="evm" onclick="window.app.selectPayment(this)">
+        <div class="payment-radio"></div>
+        <div class="payment-option-info">
+          <div class="payment-option-name">EVM Wallet</div>
+          <div class="payment-option-desc">Pay with USDC, ETH, AVAX — Ethereum, Avalanche, Base, Polygon & more</div>
+        </div>
+        <span class="payment-option-icon chain-evm"></span>
+      </div>
+
+      <div class="payment-option" data-method="solana" onclick="window.app.selectPayment(this)">
+        <div class="payment-radio"></div>
+        <div class="payment-option-info">
+          <div class="payment-option-name">Solana Wallet</div>
+          <div class="payment-option-desc">Pay with SOL or USDC on Solana</div>
+        </div>
+        <span class="payment-option-icon chain-sol"></span>
+      </div>
+
+      <div class="payment-option" data-method="stripe" onclick="window.app.selectPayment(this)">
+        <div class="payment-radio"></div>
+        <div class="payment-option-info">
+          <div class="payment-option-name">Credit / Debit Card</div>
+          <div class="payment-option-desc">Visa, Mastercard, AMEX via Stripe</div>
+        </div>
+        <span class="payment-option-icon chain-stripe"></span>
+      </div>
+
+      <div class="payment-option" data-method="paypal" onclick="window.app.selectPayment(this)">
+        <div class="payment-radio"></div>
+        <div class="payment-option-info">
+          <div class="payment-option-name">PayPal</div>
+          <div class="payment-option-desc">Pay with your PayPal balance or linked card</div>
+        </div>
+        <span class="payment-option-icon chain-paypal"></span>
+      </div>
+    </div>
+
+    <div class="wallet-connect-area" id="walletConnectArea">
+      <p>Connect your wallet to complete the purchase</p>
+      <button class="btn-wallet" id="connectWalletBtn">🔗 Connect Wallet</button>
+    </div>
+
+    <div id="checkout-summary"></div>
+
+    <button class="btn-checkout" style="margin-top:24px;" id="confirmPayBtn">
+      Confirm & Pay
+    </button>
+  </div>
+</div>
+
+<!-- ═══ CART DRAWER ═══ -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header">
+    <div class="cart-title">Your Cart (<span id="cartItemCount">0</span>)</div>
+    <button class="cart-close" id="cartClose" aria-label="Close cart">×</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty" id="cartEmpty">
+      <p>Your cart is empty</p>
+      <a class="btn btn-outline" href="#/shop" style="margin-top:16px;display:inline-flex;">Browse Products</a>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter">
+    <div class="cart-total">
+      <span class="cart-total-label">Subtotal</span>
+      <span class="cart-total-value" id="cartTotalValue">$0.00</span>
+    </div>
+    <div class="cart-total-crypto" id="cartTotalCrypto">≈ 0 USDC</div>
+    <button class="btn-checkout" id="cartCheckoutBtn">Checkout →</button>
+  </div>
+</div>
+
+<!-- ═══ NOTIFICATION ═══ -->
+<div class="notification" id="notification"></div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-brand-name">Hem★Hem SaiGon</div>
+      <p>Ska orchestra born in the alleys of Ho Chi Minh City. No Rice No Life since 2012.</p>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <div class="footer-col-title">Shop</div>
+        <a href="#/shop">All Products</a>
+        <a href="#/shop">New Arrivals</a>
+        <a href="#/shop">Best Sellers</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Band</div>
+        <a href="https://www.facebook.com/hemhemsaigon/" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://www.instagram.com/hemsaigon_/" target="_blank" rel="noopener">Instagram</a>
+        <a href="#" target="_blank">YouTube</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Help</div>
+        <a href="#">Shipping</a>
+        <a href="#">Crypto FAQ</a>
+        <a href="#">Size Guide</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Hem★Hem SaiGon. All rights reserved.</span>
+    <span>EVM Multi-Chain · SOL · USDC · Visa · PayPal</span>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
