@@ -692,8 +692,8 @@ const USDC_CONTRACTS = {
 };
 
 // Your receiving wallet — UPDATE THIS
-const MERCHANT_EVM_ADDRESS = '0xYOUR_EVM_WALLET_ADDRESS_HERE';
-const MERCHANT_SOL_ADDRESS = 'YOUR_SOLANA_WALLET_ADDRESS_HERE';
+const MERCHANT_EVM_ADDRESS = '0xDCc82b9e02D40Ca9ce542C51ff1851866dfE97ED';
+const MERCHANT_SOL_ADDRESS = '9uqkVxMDhbwVbfkP242ogqh1TbeZ45e35gPnEuEz2SWj';
 
 let connectedEvmAddress = null;
 let connectedSolAddress = null;
