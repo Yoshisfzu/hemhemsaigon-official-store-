@@ -10,133 +10,80 @@
 const PRODUCTS = [
   {
     id: 1,
-    name: "Hem★Hem Logo Tee — Blue",
-    category: "T-Shirts",
+    name: "10th Anniversary Tee — Black",
+    category: "Anniversary",
     price: 35,
-    description: "Classic crew neck tee featuring the iconic Hem★Hem SaiGon circular logo in blue. 100% premium cotton, pre-shrunk. Printed in Ho Chi Minh City with water-based inks.",
+    description: "Celebrating 10 years of Hem★Hem SaiGon (2012-2022). Features the iconic rice grain '10' design on the front and the complete 10 Years Live History on the back — 71 shows from Birth of Hem★Hem to Vietnam Festival 2022 at Yoyogi Park, Tokyo.",
     sizes: ["S", "M", "L", "XL", "XXL"],
-    tag: "new",
-    emoji: "👕"
+    tag: "limited",
+    imageF: "assets/products/00-B-01-F.png",
+    imageB: "assets/products/00-B-01-B.png"
   },
   {
     id: 2,
-    name: "Hem★Hem Logo Tee — Black",
-    category: "T-Shirts",
+    name: "10th Anniversary Tee — White",
+    category: "Anniversary",
     price: 35,
-    description: "The iconic Hem★Hem SaiGon logo on deep black. Heavyweight 220gsm cotton for durability. A must-have for any fan.",
+    description: "The white edition of the 10th Anniversary tee. Same iconic rice grain '10' design with the full 10 Years Live History on the back. Premium cotton, screen-printed in Ho Chi Minh City.",
     sizes: ["S", "M", "L", "XL", "XXL"],
-    tag: null,
-    emoji: "👕"
+    tag: "limited",
+    imageF: "assets/products/00-W-01-F.png",
+    imageB: "assets/products/00-W-01-B.png"
   },
   {
     id: 3,
-    name: "Rice Skull Character Tee",
-    category: "T-Shirts",
+    name: "Hem★Town MuiNe Tee — Black",
+    category: "Event",
     price: 32,
-    description: "Featuring the beloved rice skull mascot in his classic dancing pose. Screen-printed on soft ringspun cotton. Have a Rice Day!",
+    description: "Official merchandise from Hem★Town Vol.1 — Hem★Hem音楽祭 in Mui Ne (17-18 Dec 2022). Features a beautiful coastal landscape illustration on the front with the Hem★Town festival logo on the back.",
     sizes: ["S", "M", "L", "XL"],
-    tag: null,
-    emoji: "👕"
+    tag: "new",
+    imageF: "assets/products/00-B-02-F.png",
+    imageB: "assets/products/00-B-02-B.png"
   },
   {
     id: 4,
-    name: "Skull Character Hoodie",
-    category: "Outerwear",
-    price: 55,
-    description: "Heavyweight hoodie with the Hem★Hem rice skull character on the back. Fleece-lined, kangaroo pocket. Perfect for outdoor shows.",
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    tag: "limited",
-    emoji: "🎽"
+    name: "Hem★Town MuiNe Tee — White",
+    category: "Event",
+    price: 32,
+    description: "White edition of the Hem★Town Vol.1 festival tee. The vivid coastal sunset artwork pops on white cotton. Mui Ne memories in wearable form.",
+    sizes: ["S", "M", "L", "XL"],
+    tag: "new",
+    imageF: "assets/products/00-W-02-F.png",
+    imageB: "assets/products/00-W-02-B.png"
   },
   {
     id: 5,
-    name: "Checkered Windbreaker",
-    category: "Outerwear",
-    price: 65,
-    description: "Lightweight windbreaker featuring Hem★Hem's signature checkered pattern. Water-resistant, packable. From alley shows to festivals.",
+    name: "4P's × Hem★Hem Collab Polo",
+    category: "Collab",
+    price: 48,
+    description: "Special collaboration with 4P's. Traditional pattern polo shirt featuring both 4P's and Hem★Hem SaiGon logos. Navy and white all-over print with #1 on the back. Limited production run.",
     sizes: ["S", "M", "L", "XL"],
-    tag: "new",
-    emoji: "🧥"
+    tag: "collab",
+    imageF: "assets/products/00-C-01-F.png",
+    imageB: "assets/products/00-C-01-B.png"
   },
   {
     id: 6,
-    name: "Rice Day Snapback",
-    category: "Headwear",
-    price: 28,
-    description: "Structured snapback with 'HAVE A RICE DAY' embroidered on the front. Adjustable snap closure. One size fits most.",
-    sizes: null,
-    tag: "limited",
-    emoji: "🧢"
+    name: "Love and Rice Tee — Orange",
+    category: "Classic",
+    price: 30,
+    description: "Love is Like Rice — We've Got to Let it Grow. Featuring the iconic dancing rice characters on vibrant orange. A fan-favorite design that captures the heart of Hem★Hem SaiGon.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    tag: null,
+    imageF: "assets/products/05-C-01-F.png",
+    imageB: "assets/products/05-C-01-B.png"
   },
   {
     id: 7,
-    name: "Checkered Bucket Hat",
-    category: "Headwear",
-    price: 25,
-    description: "Reversible bucket hat — checkered on one side, solid black on the other. Cotton twill, packable.",
-    sizes: null,
-    tag: null,
-    emoji: "🧢"
-  },
-  {
-    id: 8,
-    name: "No Rice No Life Sticker Pack",
-    category: "Accessories",
-    price: 8,
-    description: "Pack of 10 die-cut vinyl stickers featuring Hem★Hem characters and slogans. Waterproof, UV-resistant. Stick them everywhere.",
-    sizes: null,
-    tag: null,
-    emoji: "🎵"
-  },
-  {
-    id: 9,
-    name: "Checkered Pick Set",
-    category: "Accessories",
-    price: 12,
-    description: "Set of 6 custom guitar picks in Hem★Hem checkered design. Medium gauge, celluloid. Play like a ska star.",
-    sizes: null,
-    tag: null,
-    emoji: "🎸"
-  },
-  {
-    id: 10,
-    name: "Hem★Hem Tote Bag",
-    category: "Bags",
-    price: 22,
-    description: "Canvas tote bag with the Hem★Hem SaiGon logo. Reinforced handles, inner pocket. Carry your rice in style.",
-    sizes: null,
-    tag: null,
-    emoji: "👜"
-  },
-  {
-    id: 11,
-    name: "Rice Day EP — Vinyl",
-    category: "Music",
-    price: 18,
-    description: "Limited pressing of the Rice Day EP on 180g vinyl. 4 tracks of pure Saigon ska energy. Includes lyric insert.",
-    sizes: null,
-    tag: "collab",
-    emoji: "📀"
-  },
-  {
-    id: 12,
-    name: "Hem★Hem × Pasteur St. Glass Set",
-    category: "Drinkware",
+    name: "Gohan Omori Tee — Green",
+    category: "Classic",
     price: 30,
-    description: "Collaboration with Pasteur Street Brewing. Set of 2 pint glasses with Hem★Hem branding. Cheers to rice beer!",
-    sizes: null,
-    tag: "collab",
-    emoji: "🍺"
-  },
-  {
-    id: 13,
-    name: "Hem★Hem Enamel Pin Set",
-    category: "Accessories",
-    price: 15,
-    description: "Set of 3 enamel pins: Rice Skull, Logo Badge, and 'No Rice No Life' banner. Hard enamel with butterfly clutch backs.",
-    sizes: null,
-    tag: "new",
-    emoji: "📌"
+    description: "ごはん大盛り — As Much Rice As Possible. Bold green tee with the signature rice bowl circle pattern on the front. No Rice No Life spirit in every thread.",
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    tag: null,
+    imageF: "assets/products/06-C-01-F.png",
+    imageB: "assets/products/06-C-01-B.png"
   }
 ];
 
@@ -156,7 +103,7 @@ function addToCart(productId, size = null, qty = 1) {
   if (existing) {
     existing.qty += qty;
   } else {
-    cart.push({ productId, name: product.name, price: product.price, size, qty, emoji: product.emoji });
+    cart.push({ productId, name: product.name, price: product.price, size, qty, imageF: product.imageF });
   }
   renderCart();
   showNotification(`${product.name} added to cart`);
@@ -220,7 +167,7 @@ function renderCart() {
         const el = document.createElement('div');
         el.className = 'cart-item';
         el.innerHTML = `
-          <div class="cart-item-image">${item.emoji}</div>
+          <div class="cart-item-image"><img src="${item.imageF}" alt="${item.name}"></div>
           <div class="cart-item-details">
             <div class="cart-item-name">${item.name}</div>
             <div class="cart-item-variant">${item.size ? 'Size: ' + item.size : 'One Size'}</div>
@@ -272,7 +219,7 @@ function productCardHTML(product) {
   return `
     <div class="product-card" data-product-id="${product.id}">
       <div class="product-image">
-        <div class="product-image-placeholder">${product.emoji}</div>
+        <img class="product-img" src="${product.imageF}" alt="${product.name}" loading="lazy">
         ${tagHTML}
         <div class="product-overlay">
           <button class="btn-add" data-quick-add="${product.id}">Quick Add</button>
@@ -340,11 +287,10 @@ function renderProductDetail(productId) {
 
   container.innerHTML = `
     <div class="detail-gallery">
-      <div class="detail-main-image">${product.emoji}</div>
+      <div class="detail-main-image"><img id="detailMainImg" src="${product.imageF}" alt="${product.name}"></div>
       <div class="detail-thumbnails">
-        <div class="detail-thumb active"></div>
-        <div class="detail-thumb"></div>
-        <div class="detail-thumb"></div>
+        <div class="detail-thumb active" data-img="${product.imageF}"><img src="${product.imageF}" alt="Front"></div>
+        <div class="detail-thumb" data-img="${product.imageB}"><img src="${product.imageB}" alt="Back"></div>
       </div>
     </div>
     <div class="detail-info">
@@ -373,6 +319,16 @@ function renderProductDetail(productId) {
       </div>
     </div>
   `;
+
+  // Thumbnail click → switch main image
+  container.querySelectorAll('.detail-thumb').forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      container.querySelectorAll('.detail-thumb').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+      const mainImg = document.getElementById('detailMainImg');
+      if (mainImg && thumb.dataset.img) mainImg.src = thumb.dataset.img;
+    });
+  });
 
   // Size selection
   container.querySelectorAll('.size-btn').forEach(btn => {
