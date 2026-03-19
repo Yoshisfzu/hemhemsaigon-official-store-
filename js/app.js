@@ -510,6 +510,11 @@ function handleRoute() {
   } else if (hash === '#/checkout') {
     document.getElementById('page-checkout').classList.add('active');
     renderCheckoutSummary();
+  } else if (hash.startsWith('#/success')) {
+    document.getElementById('page-success').classList.add('active');
+    const params = new URLSearchParams(hash.split('?')[1] || '');
+    const sessionId = params.get('session_id');
+    renderSuccessPage(sessionId);
   } else {
     // Home
     document.getElementById('page-home').classList.add('active');
@@ -569,6 +574,140 @@ document.addEventListener('DOMContentLoaded', () => {
   // Hash change listener
   window.addEventListener('hashchange', handleRoute);
 });
+
+// ═══════════════════════════════════════════════════════════════
+// ORDER SUCCESS PAGE
+// ═══════════════════════════════════════════════════════════════
+
+async function renderSuccessPage(sessionId) {
+  const container = document.getElementById('success-content');
+  if (!container) return;
+
+  // Clear cart on successful order
+  cart = [];
+  renderCart();
+
+  if (!sessionId) {
+    container.innerHTML = renderSuccessFallback();
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/get-session?session_id=${sessionId}`);
+    if (!response.ok) throw new Error('Failed to fetch order details');
+    const order = await response.json();
+
+    const dateStr = new Date(order.createdAt).toLocaleDateString('en-US', {
+      year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+
+    const addressHTML = order.shippingAddress
+      ? `<div class="success-section">
+          <div class="success-section-title">Shipping Address</div>
+          <div class="success-address">
+            <p class="success-address-name">${order.shippingAddress.name}</p>
+            <p>${order.shippingAddress.line1}</p>
+            ${order.shippingAddress.line2 ? `<p>${order.shippingAddress.line2}</p>` : ''}
+            <p>${order.shippingAddress.city}${order.shippingAddress.state ? ', ' + order.shippingAddress.state : ''} ${order.shippingAddress.postal_code || ''}</p>
+            <p>${order.shippingAddress.country}</p>
+          </div>
+        </div>`
+      : '';
+
+    container.innerHTML = `
+      <div class="success-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 12l2.5 2.5L16 9"/>
+        </svg>
+      </div>
+      <h1 class="success-title">Order Confirmed!</h1>
+      <p class="success-subtitle">Thank you for your purchase, ${order.customerName || 'valued customer'}!</p>
+      <p class="success-email-note">${order.customerEmail ? 'A confirmation email will be sent to <strong>' + order.customerEmail + '</strong>' : ''}</p>
+
+      <div class="success-order-card">
+        <div class="success-order-header">
+          <div>
+            <div class="success-label">Order ID</div>
+            <div class="success-value">#HH-${order.orderId}</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="success-label">Date</div>
+            <div class="success-value">${dateStr}</div>
+          </div>
+        </div>
+
+        <div class="success-section">
+          <div class="success-section-title">Items Ordered</div>
+          <div class="success-items">
+            ${order.items.map(item => `
+              <div class="success-item">
+                <div class="success-item-info">
+                  <span class="success-item-name">${item.name}</span>
+                  <span class="success-item-qty">x${item.quantity}</span>
+                </div>
+                <span class="success-item-price">$${item.amount.toFixed(2)}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="success-totals">
+          <div class="success-total-row">
+            <span>Subtotal</span>
+            <span>$${order.subtotal.toFixed(2)}</span>
+          </div>
+          <div class="success-total-row">
+            <span>Shipping</span>
+            <span>$${order.shipping.toFixed(2)}</span>
+          </div>
+          <div class="success-total-row success-grand-total">
+            <span>Total</span>
+            <span>$${order.total.toFixed(2)} ${order.currency}</span>
+          </div>
+        </div>
+
+        ${addressHTML}
+
+        <div class="success-section">
+          <div class="success-section-title">Customer</div>
+          <p style="color:var(--text);">${order.customerName || '—'}</p>
+          <p style="color:var(--text-muted);font-size:14px;">${order.customerEmail || '—'}</p>
+        </div>
+      </div>
+
+      <div class="success-actions">
+        <a class="btn btn-primary" href="#/shop">Continue Shopping</a>
+        <a class="btn btn-outline" href="#/">Back to Home</a>
+      </div>
+
+      <p class="success-footer-note">
+        Questions about your order? Contact us at <a href="mailto:hemhemsaigon@gmail.com" style="color:var(--accent);">hemhemsaigon@gmail.com</a>
+      </p>
+    `;
+  } catch (err) {
+    console.error('Success page error:', err);
+    container.innerHTML = renderSuccessFallback();
+  }
+}
+
+function renderSuccessFallback() {
+  return `
+    <div class="success-icon">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M8 12l2.5 2.5L16 9"/>
+      </svg>
+    </div>
+    <h1 class="success-title">Thank You for Your Order!</h1>
+    <p class="success-subtitle">Your payment has been processed successfully.</p>
+    <p class="success-email-note">You will receive a confirmation email shortly.</p>
+    <div class="success-actions">
+      <a class="btn btn-primary" href="#/shop">Continue Shopping</a>
+      <a class="btn btn-outline" href="#/">Back to Home</a>
+    </div>
+  `;
+}
 
 // ═══════════════════════════════════════════════════════════════
 // PAYMENT PROCESSING

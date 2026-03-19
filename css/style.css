@@ -1066,6 +1066,191 @@ nav {
 .btn-wallet:hover { background: var(--accent); color: var(--bg); }
 
 /* ═══════════════════════════════════════════════════════════════
+   ORDER SUCCESS PAGE
+   ═══════════════════════════════════════════════════════════════ */
+.success-container {
+  margin-top: 64px;
+  padding: 60px 24px 80px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.success-loading {
+  padding: 80px 0;
+  color: var(--text-muted);
+}
+
+.success-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.success-icon { margin-bottom: 24px; }
+
+.success-title {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+
+.success-subtitle {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.success-email-note {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 40px;
+}
+
+.success-email-note strong { color: var(--accent); }
+
+.success-order-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  text-align: left;
+  margin-bottom: 40px;
+}
+
+.success-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.success-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.success-value {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Space Grotesk', monospace;
+}
+
+.success-section {
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.success-section:last-child { border-bottom: none; }
+
+.success-section-title {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.success-items { display: flex; flex-direction: column; gap: 12px; }
+
+.success-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.success-item:last-child { border-bottom: none; }
+
+.success-item-info { display: flex; align-items: center; gap: 12px; }
+
+.success-item-name { font-size: 14px; font-weight: 500; }
+
+.success-item-qty {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+}
+
+.success-item-price {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.success-totals {
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.success-total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.success-total-row:last-child { margin-bottom: 0; }
+
+.success-grand-total {
+  padding-top: 12px;
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent) !important;
+}
+
+.success-grand-total span { color: var(--accent); }
+
+.success-address {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.success-address-name {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.success-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.success-footer-note {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .success-title { font-size: 28px; }
+  .success-order-header { flex-direction: column; gap: 16px; }
+  .success-order-header > div:last-child { text-align: left; }
+  .success-actions { flex-direction: column; align-items: center; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
    NOTIFICATION
    ═══════════════════════════════════════════════════════════════ */
 .notification {
