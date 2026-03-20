@@ -43,16 +43,38 @@ module.exports = async function handler(req, res) {
       quantity: item.qty,
     }));
 
-    // Add shipping
+    // Shipping options: Domestic (VN), Asia, International
     const shipping_options = [
       {
         shipping_rate_data: {
           type: 'fixed_amount',
-          fixed_amount: { amount: 500, currency },
-          display_name: 'Standard Shipping',
+          fixed_amount: { amount: 300, currency },
+          display_name: 'Vietnam Domestic',
+          delivery_estimate: {
+            minimum: { unit: 'business_day', value: 3 },
+            maximum: { unit: 'business_day', value: 5 },
+          },
+        },
+      },
+      {
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: { amount: 800, currency },
+          display_name: 'Asia (JP, KR, TW, SG, TH, MY, etc.)',
           delivery_estimate: {
             minimum: { unit: 'business_day', value: 7 },
             maximum: { unit: 'business_day', value: 14 },
+          },
+        },
+      },
+      {
+        shipping_rate_data: {
+          type: 'fixed_amount',
+          fixed_amount: { amount: 1500, currency },
+          display_name: 'International',
+          delivery_estimate: {
+            minimum: { unit: 'business_day', value: 14 },
+            maximum: { unit: 'business_day', value: 21 },
           },
         },
       },
