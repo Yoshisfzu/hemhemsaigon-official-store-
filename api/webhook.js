@@ -12,6 +12,7 @@
  *   RESEND_API_KEY       - Resend API key (re_...)
  *   ADMIN_EMAIL          - Admin email for order notifications
  *   SITE_URL             - Store URL
+ *   GOOGLE_SHEETS_URL    - Google Apps Script Web App URL
  */
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -68,13 +69,14 @@ module.exports = async function handler(req, res) {
 
       const order = buildOrderData(fullSession);
 
-      // Send emails in parallel
+      // Send emails and record to Google Sheets in parallel
       await Promise.all([
         sendCustomerEmail(order),
         sendAdminEmail(order),
+        recordToGoogleSheets(order),
       ]);
 
-      console.log(`Emails sent for order #HH-${order.orderId}`);
+      console.log(`Order #HH-${order.orderId}: emails sent, recorded to Sheets`);
     } catch (err) {
       console.error('Email sending failed:', err.message);
       // Don't return error — Stripe will retry the webhook
@@ -351,4 +353,45 @@ async function sendAdminEmail(order) {
     subject: `🎉 New Order #HH-${order.orderId} — $${order.total.toFixed(2)} from ${order.customerName || 'Customer'}`,
     html,
   });
+}
+
+/**
+ * Record order to Google Sheets via Apps Script Web App
+ */
+async function recordToGoogleSheets(order) {
+  const sheetsUrl = process.env.GOOGLE_SHEETS_URL;
+  if (!sheetsUrl) return;
+
+  const dateStr = order.createdAt.toLocaleString('en-US', {
+    year: 'numeric', month: 'short', day: 'numeric',
+    hour: '2-digit', minute: '2-digit',
+  });
+
+  const itemsText = order.items.map(item =>
+    `${item.name} x${item.quantity}`
+  ).join(', ');
+
+  const addressText = order.shippingAddress
+    ? `${order.shippingAddress.name}, ${order.shippingAddress.line1}${order.shippingAddress.line2 ? ' ' + order.shippingAddress.line2 : ''}, ${order.shippingAddress.city} ${order.shippingAddress.postal_code || ''}, ${order.shippingAddress.country}`
+    : 'N/A';
+
+  try {
+    await fetch(sheetsUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        orderId: `#HH-${order.orderId}`,
+        date: dateStr,
+        customer: order.customerName || '—',
+        email: order.customerEmail || '—',
+        items: itemsText,
+        subtotal: `$${order.subtotal.toFixed(2)}`,
+        shipping: `$${order.shipping.toFixed(2)}`,
+        total: `$${order.total.toFixed(2)} ${order.currency}`,
+        shippingAddress: addressText,
+      }),
+    });
+  } catch (err) {
+    console.error('Google Sheets recording failed:', err.message);
+  }
 }
