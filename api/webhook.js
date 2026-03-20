@@ -375,23 +375,46 @@ async function recordToGoogleSheets(order) {
     ? `${order.shippingAddress.name}, ${order.shippingAddress.line1}${order.shippingAddress.line2 ? ' ' + order.shippingAddress.line2 : ''}, ${order.shippingAddress.city} ${order.shippingAddress.postal_code || ''}, ${order.shippingAddress.country}`
     : 'N/A';
 
-  try {
-    await fetch(sheetsUrl, {
+  const payload = JSON.stringify({
+    orderId: `#HH-${order.orderId}`,
+    date: dateStr,
+    customer: order.customerName || '—',
+    email: order.customerEmail || '—',
+    items: itemsText,
+    subtotal: `$${order.subtotal.toFixed(2)}`,
+    shipping: `$${order.shipping.toFixed(2)}`,
+    total: `$${order.total.toFixed(2)} ${order.currency}`,
+    shippingAddress: addressText,
+  });
+
+  // Use https module to handle Google Apps Script's 302 redirect properly
+  const https = require('https');
+  const url = new URL(sheetsUrl);
+
+  return new Promise((resolve) => {
+    const postReq = https.request({
+      hostname: url.hostname,
+      path: url.pathname + url.search,
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        orderId: `#HH-${order.orderId}`,
-        date: dateStr,
-        customer: order.customerName || '—',
-        email: order.customerEmail || '—',
-        items: itemsText,
-        subtotal: `$${order.subtotal.toFixed(2)}`,
-        shipping: `$${order.shipping.toFixed(2)}`,
-        total: `$${order.total.toFixed(2)} ${order.currency}`,
-        shippingAddress: addressText,
-      }),
+      headers: {
+        'Content-Type': 'text/plain',
+        'Content-Length': Buffer.byteLength(payload),
+      },
+    }, (response) => {
+      // Follow redirect if Google returns 302
+      if (response.statusCode === 302 && response.headers.location) {
+        https.get(response.headers.location, () => resolve());
+      } else {
+        resolve();
+      }
     });
-  } catch (err) {
-    console.error('Google Sheets recording failed:', err.message);
-  }
+
+    postReq.on('error', (err) => {
+      console.error('Google Sheets recording failed:', err.message);
+      resolve(); // Don't throw — emails are more important
+    });
+
+    postReq.write(payload);
+    postReq.end();
+  });
 }
