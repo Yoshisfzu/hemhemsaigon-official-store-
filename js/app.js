@@ -941,10 +941,30 @@ async function connectSolanaWallet() {
   }
 }
 
+// Solana constants
+const SOLANA_USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+const TOKEN_PROGRAM_ID = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+const ASSOCIATED_TOKEN_PROGRAM_ID = 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL';
+
 /**
- * Process Solana USDC payment
- * Note: Full implementation requires @solana/web3.js and @solana/spl-token
- * loaded via CDN in index.html for production use
+ * Derive Associated Token Account address
+ */
+async function getAssociatedTokenAddress(mint, owner) {
+  const { PublicKey } = solanaWeb3;
+  const mintKey = new PublicKey(mint);
+  const ownerKey = new PublicKey(owner);
+  const tokenProgramId = new PublicKey(TOKEN_PROGRAM_ID);
+  const ataProgramId = new PublicKey(ASSOCIATED_TOKEN_PROGRAM_ID);
+
+  const [ata] = await PublicKey.findProgramAddress(
+    [ownerKey.toBuffer(), tokenProgramId.toBuffer(), mintKey.toBuffer()],
+    ataProgramId
+  );
+  return ata;
+}
+
+/**
+ * Process Solana USDC payment via SPL Token transfer
  */
 async function processSolanaPayment() {
   if (!connectedSolAddress) {
@@ -957,15 +977,94 @@ async function processSolanaPayment() {
     return;
   }
 
-  // Solana USDC transfer requires @solana/web3.js + spl-token
-  // This will be fully implemented when CDN libraries are loaded
-  showNotification('Solana payment: confirming in wallet...');
+  if (typeof solanaWeb3 === 'undefined') {
+    showNotification('Solana library not loaded. Please refresh and try again.', 'error');
+    return;
+  }
 
-  // Placeholder for full SPL token transfer logic
-  // In production, this uses:
-  // 1. Connection to Solana mainnet-beta
-  // 2. getOrCreateAssociatedTokenAccount
-  // 3. createTransferInstruction for USDC SPL token
-  // 4. provider.signAndSendTransaction
-  showNotification('Solana USDC transfer will be finalized after CDN setup', 'error');
+  const btn = document.getElementById('confirmPayBtn');
+  const origText = btn.textContent;
+  btn.textContent = 'Confirm in wallet...';
+  btn.disabled = true;
+
+  try {
+    const { Connection, PublicKey, Transaction, TransactionInstruction, clusterApiUrl } = solanaWeb3;
+    const provider = window.phantom?.solana || window.solana;
+
+    const connection = new Connection(clusterApiUrl('mainnet-beta'), 'confirmed');
+
+    const total = getCartTotal() + 5; // + shipping
+    // USDC on Solana has 6 decimals
+    const amount = BigInt(Math.round(total * 1e6));
+
+    const senderPubkey = new PublicKey(connectedSolAddress);
+    const merchantPubkey = new PublicKey(MERCHANT_SOL_ADDRESS);
+    const mintPubkey = new PublicKey(SOLANA_USDC_MINT);
+    const tokenProgramId = new PublicKey(TOKEN_PROGRAM_ID);
+    const ataProgramId = new PublicKey(ASSOCIATED_TOKEN_PROGRAM_ID);
+
+    // Derive Associated Token Accounts
+    const senderAta = await getAssociatedTokenAddress(SOLANA_USDC_MINT, connectedSolAddress);
+    const merchantAta = await getAssociatedTokenAddress(SOLANA_USDC_MINT, MERCHANT_SOL_ADDRESS);
+
+    const transaction = new Transaction();
+
+    // Check if merchant ATA exists, if not, create it
+    const merchantAtaInfo = await connection.getAccountInfo(merchantAta);
+    if (!merchantAtaInfo) {
+      // Create Associated Token Account instruction
+      transaction.add(
+        new TransactionInstruction({
+          keys: [
+            { pubkey: senderPubkey, isSigner: true, isWritable: true },
+            { pubkey: merchantAta, isSigner: false, isWritable: true },
+            { pubkey: merchantPubkey, isSigner: false, isWritable: false },
+            { pubkey: mintPubkey, isSigner: false, isWritable: false },
+            { pubkey: solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
+            { pubkey: tokenProgramId, isSigner: false, isWritable: false },
+          ],
+          programId: ataProgramId,
+          data: Buffer.from([]),
+        })
+      );
+    }
+
+    // SPL Token Transfer instruction (instruction index 3)
+    const amountBuffer = Buffer.alloc(8);
+    amountBuffer.writeBigUInt64LE(amount);
+    const transferData = Buffer.concat([Buffer.from([3]), amountBuffer]);
+
+    transaction.add(
+      new TransactionInstruction({
+        keys: [
+          { pubkey: senderAta, isSigner: false, isWritable: true },
+          { pubkey: merchantAta, isSigner: false, isWritable: true },
+          { pubkey: senderPubkey, isSigner: true, isWritable: false },
+        ],
+        programId: tokenProgramId,
+        data: transferData,
+      })
+    );
+
+    // Set recent blockhash and fee payer
+    const { blockhash } = await connection.getLatestBlockhash('confirmed');
+    transaction.recentBlockhash = blockhash;
+    transaction.feePayer = senderPubkey;
+
+    // Sign and send
+    const { signature } = await provider.signAndSendTransaction(transaction);
+    await connection.confirmTransaction(signature, 'confirmed');
+
+    showNotification('Payment sent! TX: ' + signature.slice(0, 10) + '...');
+    cart = [];
+    renderCart();
+    window.location.hash = '#/success';
+
+  } catch (err) {
+    console.error('Solana payment error:', err);
+    showNotification(err.message || 'Payment failed', 'error');
+  } finally {
+    btn.textContent = origText;
+    btn.disabled = false;
+  }
 }
