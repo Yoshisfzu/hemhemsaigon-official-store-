@@ -964,6 +964,19 @@ async function getAssociatedTokenAddress(mint, owner) {
 }
 
 /**
+ * Encode a BigInt as 8-byte little-endian Uint8Array
+ */
+function encodeLittleEndian64(value) {
+  const buf = new Uint8Array(8);
+  let n = BigInt(value);
+  for (let i = 0; i < 8; i++) {
+    buf[i] = Number(n & 0xffn);
+    n >>= 8n;
+  }
+  return buf;
+}
+
+/**
  * Process Solana USDC payment via SPL Token transfer
  */
 async function processSolanaPayment() {
@@ -988,10 +1001,29 @@ async function processSolanaPayment() {
   btn.disabled = true;
 
   try {
-    const { Connection, PublicKey, Transaction, TransactionInstruction, clusterApiUrl } = solanaWeb3;
+    const { Connection, PublicKey, Transaction, TransactionInstruction } = solanaWeb3;
     const provider = window.phantom?.solana || window.solana;
 
-    const connection = new Connection(clusterApiUrl('mainnet-beta'), 'confirmed');
+    // Use Ankr free RPC (public mainnet-beta has aggressive rate limits / 403)
+    const RPC_ENDPOINTS = [
+      'https://rpc.ankr.com/solana',
+      'https://api.mainnet-beta.solana.com',
+    ];
+
+    let connection;
+    for (const rpc of RPC_ENDPOINTS) {
+      try {
+        connection = new Connection(rpc, 'confirmed');
+        await connection.getLatestBlockhash('confirmed');
+        break; // success — use this endpoint
+      } catch (_) {
+        console.warn('RPC failed:', rpc);
+        connection = null;
+      }
+    }
+    if (!connection) {
+      throw new Error('Cannot connect to Solana network. Please try again later.');
+    }
 
     const total = getCartTotal() + 5; // + shipping
     // USDC on Solana has 6 decimals
@@ -1009,30 +1041,28 @@ async function processSolanaPayment() {
 
     const transaction = new Transaction();
 
-    // Check if merchant ATA exists, if not, create it
-    const merchantAtaInfo = await connection.getAccountInfo(merchantAta);
-    if (!merchantAtaInfo) {
-      // Create Associated Token Account instruction
-      transaction.add(
-        new TransactionInstruction({
-          keys: [
-            { pubkey: senderPubkey, isSigner: true, isWritable: true },
-            { pubkey: merchantAta, isSigner: false, isWritable: true },
-            { pubkey: merchantPubkey, isSigner: false, isWritable: false },
-            { pubkey: mintPubkey, isSigner: false, isWritable: false },
-            { pubkey: solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
-            { pubkey: tokenProgramId, isSigner: false, isWritable: false },
-          ],
-          programId: ataProgramId,
-          data: Buffer.from([]),
-        })
-      );
-    }
+    // Always include CreateIdempotent ATA instruction for merchant
+    // Instruction index 1 = CreateIdempotent (won't fail if ATA already exists)
+    transaction.add(
+      new TransactionInstruction({
+        keys: [
+          { pubkey: senderPubkey, isSigner: true, isWritable: true },
+          { pubkey: merchantAta, isSigner: false, isWritable: true },
+          { pubkey: merchantPubkey, isSigner: false, isWritable: false },
+          { pubkey: mintPubkey, isSigner: false, isWritable: false },
+          { pubkey: solanaWeb3.SystemProgram.programId, isSigner: false, isWritable: false },
+          { pubkey: tokenProgramId, isSigner: false, isWritable: false },
+        ],
+        programId: ataProgramId,
+        data: new Uint8Array([1]), // 1 = CreateIdempotent
+      })
+    );
 
     // SPL Token Transfer instruction (instruction index 3)
-    const amountBuffer = Buffer.alloc(8);
-    amountBuffer.writeBigUInt64LE(amount);
-    const transferData = Buffer.concat([Buffer.from([3]), amountBuffer]);
+    const amountBytes = encodeLittleEndian64(amount);
+    const transferData = new Uint8Array(9);
+    transferData[0] = 3; // Transfer instruction index
+    transferData.set(amountBytes, 1);
 
     transaction.add(
       new TransactionInstruction({
