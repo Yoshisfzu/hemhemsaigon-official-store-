@@ -84,6 +84,17 @@ const PRODUCTS = [
     tag: null,
     imageF: "assets/products/06-C-01-F.png",
     imageB: "assets/products/06-C-01-B.png"
+  },
+  {
+    id: 99,
+    name: "🧪 Wallet Test Item",
+    category: "Test",
+    price: 0.01,
+    description: "Test product for wallet payment verification. $0.01 USDC. This item will be removed before launch.",
+    sizes: null,
+    tag: "new",
+    imageF: "assets/products/00-B-01-F.png",
+    imageB: "assets/products/00-B-01-B.png"
   }
 ];
 
