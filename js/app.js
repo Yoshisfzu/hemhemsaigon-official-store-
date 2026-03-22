@@ -1004,24 +1004,41 @@ async function processSolanaPayment() {
     const { Connection, PublicKey, Transaction, TransactionInstruction } = solanaWeb3;
     const provider = window.phantom?.solana || window.solana;
 
-    // Use Ankr free RPC (public mainnet-beta has aggressive rate limits / 403)
-    const RPC_ENDPOINTS = [
-      'https://rpc.ankr.com/solana',
-      'https://api.mainnet-beta.solana.com',
-    ];
+    if (!provider) {
+      throw new Error('Phantom wallet not found. Please install Phantom.');
+    }
 
-    let connection;
-    for (const rpc of RPC_ENDPOINTS) {
-      try {
-        connection = new Connection(rpc, 'confirmed');
-        await connection.getLatestBlockhash('confirmed');
-        break; // success — use this endpoint
-      } catch (_) {
-        console.warn('RPC failed:', rpc);
-        connection = null;
+    // Get blockhash via Phantom's internal RPC (no external RPC needed)
+    let blockhash;
+    try {
+      // Phantom exposes JSON-RPC via its provider request method
+      const rpcResult = await provider.request({
+        method: 'getLatestBlockhash',
+        params: [{ commitment: 'confirmed' }],
+      });
+      blockhash = rpcResult.value.blockhash;
+      console.log('Blockhash via Phantom:', blockhash);
+    } catch (phantomRpcErr) {
+      console.warn('Phantom RPC failed, trying public endpoints...', phantomRpcErr);
+      // Fallback: try public RPC endpoints
+      const RPC_ENDPOINTS = [
+        'https://solana-rpc.publicnode.com',
+        'https://rpc.ankr.com/solana',
+        'https://api.mainnet-beta.solana.com',
+      ];
+      for (const rpc of RPC_ENDPOINTS) {
+        try {
+          const conn = new Connection(rpc, 'confirmed');
+          const result = await conn.getLatestBlockhash('confirmed');
+          blockhash = result.blockhash;
+          console.log('RPC connected:', rpc);
+          break;
+        } catch (e) {
+          console.warn('RPC failed:', rpc, e.message);
+        }
       }
     }
-    if (!connection) {
+    if (!blockhash) {
       throw new Error('Cannot connect to Solana network. Please try again later.');
     }
 
@@ -1077,13 +1094,11 @@ async function processSolanaPayment() {
     );
 
     // Set recent blockhash and fee payer
-    const { blockhash } = await connection.getLatestBlockhash('confirmed');
     transaction.recentBlockhash = blockhash;
     transaction.feePayer = senderPubkey;
 
-    // Sign and send
+    // Sign and send via Phantom (Phantom uses its own RPC to broadcast)
     const { signature } = await provider.signAndSendTransaction(transaction);
-    await connection.confirmTransaction(signature, 'confirmed');
 
     showNotification('Payment sent! TX: ' + signature.slice(0, 10) + '...');
     cart = [];
